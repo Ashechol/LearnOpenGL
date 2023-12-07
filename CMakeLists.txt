@@ -11,12 +11,13 @@ elseif (${WIN32})
     link_directories(Libs)
 endif ()
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(HelloWindow Source/HelloWindow.cpp glad.c)
+add_executable(HelloTriangle Source/HelloTriangle.cpp glad.c)
 
 if (${APPLE})
-    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
-    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(HelloWindow "-framework Cocoa")
+    target_link_libraries(HelloWindow "-framework IOKit")
+    target_link_libraries(HelloWindow "-framework OpenGL")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} glfw3)
+target_link_libraries(HelloWindow glfw3)
