@@ -18,6 +18,11 @@ if (${APPLE})
     target_link_libraries(HelloWindow "-framework Cocoa")
     target_link_libraries(HelloWindow "-framework IOKit")
     target_link_libraries(HelloWindow "-framework OpenGL")
+
+    target_link_libraries(HelloTriangle "-framework Cocoa")
+    target_link_libraries(HelloTriangle "-framework IOKit")
+    target_link_libraries(HelloTriangle "-framework OpenGL")
 endif ()
 
 target_link_libraries(HelloWindow glfw3)
+target_link_libraries(HelloTriangle glfw3)
