@@ -11,8 +11,11 @@ elseif (${WIN32})
     link_directories(Libs)
 endif ()
 
+add_library(Shader Include/Shader.cpp glad.c)
+
 add_executable(HelloWindow Source/HelloWindow.cpp glad.c)
 add_executable(HelloTriangle Source/HelloTriangle.cpp glad.c)
+add_executable(Shaders Source/Shaders.cpp glad.c)
 
 if (${APPLE})
     target_link_libraries(HelloWindow "-framework Cocoa")
@@ -22,7 +25,12 @@ if (${APPLE})
     target_link_libraries(HelloTriangle "-framework Cocoa")
     target_link_libraries(HelloTriangle "-framework IOKit")
     target_link_libraries(HelloTriangle "-framework OpenGL")
+
+    target_link_libraries(Shaders "-framework Cocoa")
+    target_link_libraries(Shaders "-framework IOKit")
+    target_link_libraries(Shaders "-framework OpenGL")
 endif ()
 
 target_link_libraries(HelloWindow glfw3)
 target_link_libraries(HelloTriangle glfw3)
+target_link_libraries(Shaders glfw3 Shader)

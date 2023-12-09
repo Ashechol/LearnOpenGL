@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Shader.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -35,21 +37,6 @@ unsigned int indices[] = {
         1, 2, 3     // 第二个三角形
 };
 
-const char* vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-
-const char* fragmentShaderSource = "#version 330 core\n"
-                                   "out vec4 FragColor;\n"
-                                   "\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                   "}\0";
-
 int main()
 {
     glfwInit();
@@ -77,53 +64,10 @@ int main()
     }
 
 #ifdef __APPLE__
-    glViewport(0, 0, 1600, 1200);   // Retina 显示器下，宽高翻倍
+        glViewport(0, 0, 1600, 1200);   // Retina 显示器下，宽高翻倍
 #else
     glViewport(0, 0, 800, 600);
 #endif
-
-    int success;
-    char infoLog[512];
-
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(vertexShader);
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cout << "Error::Shader::Vertex::Compilation_Failed\n" << infoLog << std::endl;
-    }
-
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cout << "Error::Shader::Fragment::Compilation_Failed\n" << infoLog << std::endl;
-    }
-
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cout << infoLog << std::endl;
-    }
-    // 着色器成功绑定连接到着色程序上后，就可以释放它们的内存了
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 
     // Vertex Array Objects, Vertex Buffer Objects, Element(Index) Buffer Objects
     unsigned int VAO, VBO, EBO;
@@ -146,7 +90,10 @@ int main()
     // glBindVertexArray(0);               // 解绑 VAO
 
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    Shader newShader("E:/Project/LearnOpenGL/Shader/Simple.vert",
+                     "E:/Project/LearnOpenGL/Shader/Simple.frag");
 
     // 渲染循环
     while (!glfwWindowShouldClose(window))
@@ -154,9 +101,10 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 设置清空屏幕颜色缓冲时的颜色，状态设置函数
         glClear(GL_COLOR_BUFFER_BIT);           // 清空屏幕颜色缓冲，状态使用函数
 
-        glUseProgram(shaderProgram);
+        newShader.Use();
+        newShader.SetFloat("alpha", sin(glfwGetTime()));
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, nullptr);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -164,7 +112,6 @@ int main()
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
     return 0;
