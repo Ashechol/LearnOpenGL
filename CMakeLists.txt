@@ -15,7 +15,7 @@ add_library(Shader Include/Shader.cpp glad.c)
 
 add_executable(HelloWindow Source/HelloWindow.cpp glad.c)
 add_executable(HelloTriangle Source/HelloTriangle.cpp glad.c)
-add_executable(Shaders Source/Shaders.cpp glad.c)
+add_executable(HelloShader Source/HelloShader.cpp glad.c)
 
 if (${APPLE})
     target_link_libraries(HelloWindow "-framework Cocoa")
@@ -33,4 +33,4 @@ endif ()
 
 target_link_libraries(HelloWindow glfw3)
 target_link_libraries(HelloTriangle glfw3)
-target_link_libraries(Shaders glfw3 Shader)
+target_link_libraries(HelloShader glfw3 Shader)

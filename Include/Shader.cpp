@@ -3,8 +3,11 @@
 //
 
 #include "Shader.h"
+#include <filesystem>
 
-Shader::Shader(const char *vertexPath, const char *fragmentPath)
+namespace fs = std::filesystem;
+
+Shader::Shader(const char *vertexFileName, const char *fragmentFileName)
 {
     std::string vertexCode;
     std::string fragmentCode;
@@ -15,8 +18,9 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
     vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try
     {
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
+        auto path = fs::absolute("../Shaders/").string();
+        vShaderFile.open(path + std::string(vertexFileName));
+        fShaderFile.open(path + std::string(fragmentFileName));
         std::stringstream vShaderStream, fShaderStream;
 
         vShaderStream << vShaderFile.rdbuf();

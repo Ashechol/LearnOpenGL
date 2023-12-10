@@ -16,7 +16,7 @@ public:
 
     unsigned int ID;
 
-    Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char* vertexFileName, const char* fragmentFileName);
 
     void Use() const;
 

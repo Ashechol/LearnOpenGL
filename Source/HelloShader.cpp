@@ -18,24 +18,24 @@ void processInput(GLFWwindow* window)
 }
 
 // 三角形三个点的坐标
+float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+};
+
+// // 矩形四个点的坐标
 // float vertices[] = {
-//         -0.5f, -0.5f, 0.0f,
-//          0.5f, -0.5f, 0.0f,
-//          0.0f,  0.5f, 0.0f
+//         0.5f, 0.5f, 0.0f,   // 右上角
+//         0.5f, -0.5f, 0.0f,  // 右下角
+//         -0.5f, -0.5f, 0.0f, // 左下角
+//         -0.5f, 0.5f, 0.0f   // 左上角
 // };
 
-// 矩形四个点的坐标
-float vertices[] = {
-        0.5f, 0.5f, 0.0f,   // 右上角
-        0.5f, -0.5f, 0.0f,  // 右下角
-        -0.5f, -0.5f, 0.0f, // 左下角
-        -0.5f, 0.5f, 0.0f   // 左上角
-};
-
-unsigned int indices[] = {
-        0, 1, 3,    // 第一个三角形
-        1, 2, 3     // 第二个三角形
-};
+// unsigned int indices[] = {
+//         0, 1, 3,    // 第一个三角形
+//         1, 2, 3     // 第二个三角形
+// };
 
 int main()
 {
@@ -73,14 +73,14 @@ int main()
     unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    // glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
@@ -92,8 +92,8 @@ int main()
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    Shader newShader("E:/Project/LearnOpenGL/Shader/Simple.vert",
-                     "E:/Project/LearnOpenGL/Shader/Simple.frag");
+    Shader newShader("Simple.vert",
+                     "Simple.frag");
 
     // 渲染循环
     while (!glfwWindowShouldClose(window))
@@ -102,9 +102,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);           // 清空屏幕颜色缓冲，状态使用函数
 
         newShader.Use();
-        newShader.SetFloat("alpha", sin(glfwGetTime()));
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, nullptr);
+        // glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, nullptr);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
