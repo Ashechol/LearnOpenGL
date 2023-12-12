@@ -11,7 +11,7 @@ const float PI = 3.14159265359;
 
 float func(float value, float offset)
 {
-    return cos(value * PI + offset) * 0.5 + 0.5;
+    return cos(value * PI + PI * offset) * 0.5 + 0.5;
 }
 
 void main()
@@ -19,9 +19,9 @@ void main()
     gl_Position = vec4(aPos.x + offsetX, -aPos.y + offsetY, aPos.z, 1.0);
 
     if (aColor.r > 0)
-        ourColor = vec3(func(value, 0), func(value, -0.5), aColor.b);
+        ourColor = vec3(func(value, 0), func(value, 1), aColor.b);
     else if (aColor.g > 0)
-        ourColor = vec3(aColor.r, func(value, 0), func(value, -0.5));
+        ourColor = vec3(aColor.r, func(value, 0), func(value, 1));
     else
-        ourColor = vec3(func(value, -0.5), aColor.g, func(value, 0));
+        ourColor = vec3(func(value, 1), aColor.g, func(value, 0));
 }
