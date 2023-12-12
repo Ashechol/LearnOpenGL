@@ -12,9 +12,11 @@
 
 class Shader
 {
-public:
+private:
 
     unsigned int ID;
+
+public:
 
     Shader(const char* vertexFileName, const char* fragmentFileName);
 

@@ -89,7 +89,7 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -114,6 +114,9 @@ int main()
         newShader.Use();
         glBindVertexArray(VAO);
         // glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, nullptr);
+        newShader.SetFloat("offsetX", sin((float) glfwGetTime() * 1.5f) * 0.5f);
+        newShader.SetFloat("offsetY", cos((float) glfwGetTime() * 1.5f) * 0.5f);
+        newShader.SetFloat("value", cos((float) glfwGetTime()) * 0.5f + 0.5f);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
