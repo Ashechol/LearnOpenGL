@@ -116,7 +116,7 @@ int main()
         // glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_INT, nullptr);
         newShader.SetFloat("offsetX", sin((float) glfwGetTime() * 1.5f) * 0.5f);
         newShader.SetFloat("offsetY", cos((float) glfwGetTime() * 1.5f) * 0.5f);
-        newShader.SetFloat("value", cos((float) glfwGetTime()) * 0.5f + 0.5f);
+        newShader.SetFloat("time", (float) glfwGetTime());
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
