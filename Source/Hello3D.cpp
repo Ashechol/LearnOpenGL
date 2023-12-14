@@ -10,7 +10,7 @@
 #include "Config.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, Shader shader);
 
 float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -76,9 +76,9 @@ inline glm::mat4 Projection(float width, float height)
     return glm::perspective(glm::radians(45.f), width / height, 0.1f, 100.f);
 }
 
-inline glm::mat4 View()
+inline glm::mat4 View(glm::vec3 translate = glm::vec3(0.f, 0.f, 0.f))
 {
-    return glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -3.f));
+    return glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -3.f) + translate);
 }
 
 inline glm::mat4 Model(glm::vec3 translate, glm::vec3 axis, float angle)
@@ -168,11 +168,13 @@ int main()
 
         for (int i = 0; i < 10; ++i)
         {
-            float angle = glfwGetTime() * 50;
+            float angle = (float) glfwGetTime() * 50.f;
             glm::vec3 axis = glm::vec3(1.f, 0.5f, 0.f);
             sProgram.SetMatrix4("model", Model(cubePositions[i], axis, angle + i * 25));
             glDrawArrays(GL_TRIANGLES,  0, 36);
         }
+
+        processInput(window, sProgram);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -188,6 +190,29 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+float x, y, z;
+void processInput(GLFWwindow* window, Shader shader)
+{
+    float speed = 0.05f;
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        x += speed;
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        x -= speed;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        z += speed;
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        z -= speed;
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        y -= speed;
+    else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        y += speed;
+
+    shader.SetMatrix4("view", View(glm::vec3(x, y, z)));
 }
 
 unsigned int SetTexture(const char* filename, int format)
