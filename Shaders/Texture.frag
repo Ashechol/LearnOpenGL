@@ -13,7 +13,7 @@ void main()
     // FragColor = texture(texture1, TexCoord);
     // FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);
 
-    vec2 TexCoordInverse = vec2(-TexCoord.x, TexCoord.y);
-
-    FragColor = mix(texture(texture0, TexCoord), texture(texture1, TexCoordInverse), 0.2);
+    // vec2 TexCoordInverse = vec2(-TexCoord.x, TexCoord.y);
+    // FragColor = mix(texture(texture0, TexCoord), texture(texture1, TexCoordInverse), 0.2);
+    FragColor = mix(texture(texture0, TexCoord), texture(texture1, TexCoord), 0.2);
 }
