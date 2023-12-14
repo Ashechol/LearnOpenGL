@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "Config.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -87,8 +88,8 @@ int main()
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    unsigned int texture0 = SetTexture("../container.jpg", GL_RGB);
-    unsigned int texture1 = SetTexture("../awesomeface.png", GL_RGBA);
+    unsigned int texture0 = SetTexture("container.jpg", GL_RGB);
+    unsigned int texture1 = SetTexture("awesomeface.png", GL_RGBA);
 
     sProgram.Use();
     // glUniform1i(glGetUniformLocation(sProgram.ID, "texture0"), 0);
@@ -145,7 +146,8 @@ unsigned int SetTexture(const char* filename, int format)
     // 加载并生成纹理
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
+    std::string path = RESOURCES_PATH;
+    unsigned char *data = stbi_load((path + filename).c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

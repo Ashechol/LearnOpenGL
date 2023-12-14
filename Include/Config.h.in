@@ -1,0 +1,9 @@
+// Created by 龚汉超 on 2023/12/14.
+
+#ifndef LEARNOPENGL_DEFINE_H
+#define LEARNOPENGL_DEFINE_H
+
+#define SHADER_PATH "${Shader_Path}"
+#define RESOURCES_PATH "${Resources_Path}"
+
+#endif //LEARNOPENGL_DEFINE_H

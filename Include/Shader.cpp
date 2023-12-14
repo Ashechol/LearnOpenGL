@@ -3,6 +3,7 @@
 //
 
 #include "Shader.h"
+#include "Config.h"
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -18,7 +19,7 @@ Shader::Shader(const char *vertexFileName, const char *fragmentFileName)
     vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try
     {
-        auto path = fs::absolute("../Shaders/").string();
+        auto path = fs::absolute(SHADER_PATH).string();
         vShaderFile.open(path + std::string(vertexFileName));
         fShaderFile.open(path + std::string(fragmentFileName));
         std::stringstream vShaderStream, fShaderStream;
