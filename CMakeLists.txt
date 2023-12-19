@@ -18,5 +18,6 @@ elseif (${WIN32})
 endif ()
 
 add_library(Shader Include/Shader.cpp glad.c)
+add_library(Camera Include/Camera.cpp)
 
 add_subdirectory(Source)

@@ -6,7 +6,7 @@
 
 #include "Shader.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -62,7 +62,7 @@ int main()
         return EXIT_FAILURE;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, &framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, &FramebufferSizeCallback);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {

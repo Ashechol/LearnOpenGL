@@ -2,7 +2,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -38,7 +38,7 @@ int main()
 
     // 前两个值表示窗口左下角的位置
     glViewport(0, 0, 800, 600);
-    glfwSetFramebufferSizeCallback(window, &framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, &FramebufferSizeCallback);
 
     // 简单的渲染循环
     while (!glfwWindowShouldClose(window))

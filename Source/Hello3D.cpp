@@ -6,11 +6,13 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Camera.h"
 #include "Shader.h"
 #include "Config.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window, Shader shader);
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+void ProcessInput(GLFWwindow* window, Camera& cam);
+void MouseCallBack(GLFWwindow* window, double posX, double posY);
 
 float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -88,6 +90,10 @@ inline glm::mat4 Model(glm::vec3 translate, glm::vec3 axis, float angle)
     return glm::rotate(mat, glm::radians(angle), axis);
 }
 
+Camera camera;
+
+float deltaTime = 0.f;
+float lastFrameTime = 0.f;
 
 int main()
 {
@@ -107,7 +113,9 @@ int main()
         return EXIT_FAILURE;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, &framebuffer_size_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetFramebufferSizeCallback(window, &FramebufferSizeCallback);
+    glfwSetCursorPosCallback(window, &MouseCallBack);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
@@ -156,6 +164,10 @@ int main()
     // 渲染循环
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrameTime = glfwGetTime();
+        deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // 清空颜色缓存和深度缓存
 
@@ -171,10 +183,11 @@ int main()
             float angle = (float) glfwGetTime() * 50.f;
             glm::vec3 axis = glm::vec3(1.f, 0.5f, 0.f);
             sProgram.SetMatrix4("model", Model(cubePositions[i], axis, angle + i * 25));
+            sProgram.SetMatrix4("view", camera.View());
             glDrawArrays(GL_TRIANGLES,  0, 36);
         }
 
-        processInput(window, sProgram);
+        ProcessInput(window, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -187,32 +200,27 @@ int main()
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-float x, y, z;
-void processInput(GLFWwindow* window, Shader shader)
+void ProcessInput(GLFWwindow* window, Camera& cam)
 {
-    float speed = 0.05f;
+    glm::vec3 rightward = glm::cross(cam.forward, cam.upward);
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        x += speed;
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        x -= speed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cam.Movement(MovementDirection::Rightward, deltaTime);
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cam.Movement(MovementDirection::Leftward, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        z += speed;
+        cam.Movement(MovementDirection::Forward, deltaTime);
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        z -= speed;
+        cam.Movement(MovementDirection::Backward, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        y -= speed;
-    else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        y += speed;
-
-    shader.SetMatrix4("view", View(glm::vec3(x, y, z)));
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 }
 
 unsigned int SetTexture(const char* filename, int format)
@@ -242,4 +250,11 @@ unsigned int SetTexture(const char* filename, int format)
     stbi_image_free(data);
 
     return texture;
+}
+
+void MouseCallBack(GLFWwindow* window, double posX, double posY)
+{
+    auto x = static_cast<float>(posX);
+    auto y = static_cast<float>(posY);
+    camera.Look(x, y);
 }

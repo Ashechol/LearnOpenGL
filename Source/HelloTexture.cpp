@@ -13,7 +13,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 float vertices[] = {
@@ -51,7 +51,7 @@ int main()
         return EXIT_FAILURE;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, &framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, &FramebufferSizeCallback);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
@@ -140,7 +140,7 @@ int main()
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
