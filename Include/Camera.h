@@ -26,7 +26,7 @@ public:
     glm::vec3 rightward;
     glm::vec3 upward;
 
-    float speed = 5.f;
+    float speed = 2.f;
     float mouseSensitivity = 0.1f;
 
     float pitch = 0.f;
@@ -34,17 +34,18 @@ public:
     // float roll;
 
     Camera();
-    glm::mat4 View();
 
-    void UpdateCamera();
+    [[nodiscard]] glm::mat4 View() const;
 
     void Movement(MovementDirection direction, float deltaTime);
-    void Look(float posX, float posY, bool constraintPitch = true);
+    void Look(float deltaX, float deltaY, bool constraintPitch = true);
 
 private:
 
     bool _isInitMouse = true;
-    float _lastMouseX, _lastMouseY;
+    float _lastMouseX = 0.f, _lastMouseY = 0.f;
+
+    void UpdateCamera();
 };
 
 

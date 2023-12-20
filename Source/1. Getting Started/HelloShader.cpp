@@ -1,8 +1,8 @@
 // Created by ash.gong on 2023/12/7.
 
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 #include "Shader.h"
 

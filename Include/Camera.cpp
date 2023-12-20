@@ -9,7 +9,7 @@ Camera::Camera() :
         rightward(glm::cross(forward, WorldUpward))
 {}
 
-glm::mat4 Camera::View()
+glm::mat4 Camera::View() const
 {
     return glm::lookAt(position, position + forward, upward);
 }
@@ -34,20 +34,8 @@ void Camera::Movement(MovementDirection direction, float deltaTime)
     }
 }
 
-void Camera::Look(float posX, float posY, bool constraintPitch)
+void Camera::Look(float deltaX, float deltaY, bool constraintPitch)
 {
-    if (_isInitMouse)
-    {
-        _lastMouseX = posX;
-        _lastMouseY = posY;
-        _isInitMouse = false;
-    }
-
-    float deltaX = mouseSensitivity * (posX - _lastMouseX);
-    float deltaY = -mouseSensitivity * (posY - _lastMouseY);
-    _lastMouseX = posX;
-    _lastMouseY = posY;
-
     yaw += deltaX;
     pitch += deltaY;
 

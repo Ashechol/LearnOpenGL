@@ -17,7 +17,10 @@ elseif (${WIN32})
     link_directories(Libs)
 endif ()
 
-add_library(Shader Include/Shader.cpp glad.c)
-add_library(Camera Include/Camera.cpp)
+#add_subdirectory("Source/1. Getting Started")
 
-add_subdirectory(Source)
+add_library(Core Include/Shader.cpp Include/Camera.cpp Include/Model.cpp glad.c)
+
+add_executable(Renderer Source/Renderer.cpp)
+
+target_link_libraries(Renderer Core glfw3)

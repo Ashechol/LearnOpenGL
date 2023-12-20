@@ -7,7 +7,7 @@ add_executable(HelloWindow HelloWindow.cpp ${glad})
 add_executable(HelloTriangle HelloTriangle.cpp ${glad})
 add_executable(HelloShader HelloShader.cpp ${glad})
 add_executable(HelloTexture HelloTexture.cpp ${glad})
-add_executable(Hello3D Hello3D.cpp ${glad} ../Include/Camera.cpp)
+add_executable(Hello3D Hello3D.cpp ${glad} ../../Include/Camera.cpp)
 
 if (${APPLE})
     target_link_libraries(HelloWindow "-framework Cocoa")
