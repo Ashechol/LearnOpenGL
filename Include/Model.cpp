@@ -3,9 +3,11 @@
 #include "Model.h"
 #include "glad/glad.h"
 
-unsigned int Model::LoadModel(const int size, const float* vertices)
+Model::Model(int size, const float *vertices) :
+        position(glm::vec3(0)),
+        eulerRot(glm::vec3(0)),
+        scale(glm::vec3(1))
 {
-    unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -17,11 +19,68 @@ unsigned int Model::LoadModel(const int size, const float* vertices)
 
     // 每个顶点大小为 5，前 3 个值表示坐标，后 2 个值表示 uv
     int stride = 5 * sizeof(float);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr); // (void*)(0)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
     // 设置好了顶点属性，还需要启用它们
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+}
 
-    return VAO;
+Model::Model(unsigned int VBO) :
+        VBO(VBO),
+        position(glm::vec3(0)),
+        eulerRot(glm::vec3(0)),
+        scale(glm::vec3(1))
+{
+    glGenVertexArrays(1, &VAO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    int stride = 5 * sizeof(float);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr); // (void*)(0)
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+}
+
+Model::~Model()
+{
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+void Model::Render() const
+{
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES,  0, 36);
+}
+
+//TODO: 可以用脏标记来防止重复计算矩阵
+glm::mat4 Model::GetMatrix4f() const
+{
+    glm::mat4 model(1);
+
+    model = glm::translate(model, position);
+    model = glm::scale(model, scale);
+    model = glm::rotate(model, eulerRot.x, glm::vec3(1.f, 0.f, 0.f));
+    model = glm::rotate(model, eulerRot.y, glm::vec3(0.f, 1.f, 0.f));
+    model = glm::rotate(model, eulerRot.z, glm::vec3(0.f, 0.f, 1.f));
+
+    return model;
+}
+
+/// 加载模型到显存上
+/// \param size 模型数据大小
+/// \param vertices 模型顶点数组
+/// \return VBO ID
+unsigned int Model::Load(int size, const float *vertices)
+{
+    unsigned int modelVBO;
+
+    glGenBuffers(1, &modelVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+
+    return modelVBO;
 }

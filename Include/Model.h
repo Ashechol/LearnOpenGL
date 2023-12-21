@@ -5,6 +5,10 @@
 #ifndef LEARNOPENGL_MODEL_H
 #define LEARNOPENGL_MODEL_H
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 const float Cube[] =
 {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -52,10 +56,25 @@ const float Cube[] =
 
 class Model
 {
+private:
+
+    unsigned int VAO = 0;
+    unsigned int VBO = 0;
+
 public:
 
-    static unsigned int LoadModel(int size, const float* vertices);
+    glm::vec3 position;
+    glm::vec3 eulerRot;
+    glm::vec3 scale;
 
+    Model(int size, const float* vertices);
+    explicit Model(unsigned VBO);
+    ~Model();
+
+    [[nodiscard]] glm::mat4 GetMatrix4f() const;
+    void Render() const;
+
+    static unsigned int Load(int size, const float* vertices);
 };
 
 #endif //LEARNOPENGL_MODEL_H

@@ -40,6 +40,8 @@ public:
     void Movement(MovementDirection direction, float deltaTime);
     void Look(float deltaX, float deltaY, bool constraintPitch = true);
 
+    static glm::mat4 Projection(float width, float height);
+
 private:
 
     bool _isInitMouse = true;

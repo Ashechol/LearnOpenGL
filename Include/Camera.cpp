@@ -61,3 +61,10 @@ void Camera::UpdateCamera()
     rightward = glm::normalize(glm::cross(forward, WorldUpward));
     upward = glm::normalize(glm::cross(rightward, forward));
 }
+
+glm::mat4 Camera::Projection(float width, float height)
+{
+    return glm::perspective(glm::radians(45.f), width / height, 0.1f, 100.f);
+}
+
+

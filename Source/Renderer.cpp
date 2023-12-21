@@ -19,23 +19,6 @@ double lastMouseX, lastMouseY;
 
 Camera camera;
 
-inline glm::mat4 Projection(float width, float height)
-{
-    return glm::perspective(glm::radians(45.f), width / height, 0.1f, 100.f);
-}
-
-inline glm::mat4 View(glm::vec3 translate = glm::vec3(0.f, 0.f, 0.f))
-{
-    return glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -3.f) + translate);
-}
-
-inline glm::mat4 Model(glm::vec3 translate, glm::vec3 axis, float angle)
-{
-    glm::mat4 mat(1.f);
-    mat = glm::translate(mat, translate);
-    return glm::rotate(mat, glm::radians(angle), axis);
-}
-
 int main()
 {
 #pragma region Window Initialization
@@ -74,19 +57,26 @@ int main()
     glViewport(0, 0, 800, 600);
 #endif
 
-    Shader shader("Lighting.vert", "Lighting.frag");
-    shader.Use();
-    shader.SetMatrix4("projection", Projection(800, 600));
-    shader.SetMatrix4("view", camera.View());
-    shader.SetMatrix4("model", Model(glm::vec3( 0.0f,  0.0f,  0.0f), glm::vec3(1.f, 0.f, 0.f), 0.f));
+    Shader lightShader("Lighting.vert", "Lighting.frag");
+    lightShader.Use();
+    lightShader.SetMatrix4("projection", Camera::Projection(800, 600));
+
+    Shader boxShader("Box.vert", "Box.frag");
+    boxShader.Use();
+    boxShader.SetMatrix4("projection", Camera::Projection(800, 600));
 
 #pragma region Render Loop
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 
-    unsigned int cubeVAO = Model::LoadModel(sizeof(Cube), Cube);
-    unsigned int lightVAO = Model::LoadModel(sizeof(Cube), Cube);
+    unsigned int cubeVBO = Model::Load(sizeof(Cube), Cube);
+
+    Model cube(cubeVBO);
+    Model lightCube(cubeVBO);
+
+    lightCube.position = glm::vec3(1.2f, 1.0f, 2.0f);
+    lightCube.scale = glm::vec3(0.2f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -96,10 +86,17 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shader.Use();
-        shader.SetMatrix4("view", camera.View());
-        glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // cube.position = glm::vec3(1, 3, 3);
+
+        lightShader.Use();
+        lightShader.SetMatrix4("view", camera.View());
+        lightShader.SetMatrix4("model", lightCube.GetMatrix4f());
+        lightCube.Render();
+
+        boxShader.Use();
+        boxShader.SetMatrix4("view", camera.View());
+        boxShader.SetMatrix4("model", cube.GetMatrix4f());
+        cube.Render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

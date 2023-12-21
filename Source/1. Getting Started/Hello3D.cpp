@@ -38,7 +38,7 @@ inline glm::mat4 View(glm::vec3 translate = glm::vec3(0.f, 0.f, 0.f))
     return glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, -3.f) + translate);
 }
 
-inline glm::mat4 Model(glm::vec3 translate, glm::vec3 axis, float angle)
+inline glm::mat4 ModelMat(glm::vec3 translate, glm::vec3 axis, float angle)
 {
     glm::mat4 mat(1.f);
     mat = glm::translate(mat, translate);
