@@ -89,8 +89,8 @@ int main()
 
         // cube.position = glm::vec3(1, 3, 3);
 
-        lightCube.position.x = 3 * sin(glfwGetTime());
-        lightCube.position.z = 3 * cos(glfwGetTime());
+        lightCube.position.x = 3 * sin(currentFrameTime);
+        lightCube.position.z = 3 * cos(currentFrameTime);
 
         lightShader.Use();
         lightShader.SetMatrix4("view", camera.View());
