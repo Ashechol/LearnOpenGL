@@ -64,6 +64,7 @@ int main()
     Shader boxShader("Box.vert", "Box.frag");
     boxShader.Use();
     boxShader.SetMatrix4("projection", Camera::Projection(800, 600));
+    boxShader.SetVec4("color", glm::vec4(1.f, 0.5f, 0.31f, 1.f));
 
 #pragma region Render Loop
 
@@ -88,14 +89,24 @@ int main()
 
         // cube.position = glm::vec3(1, 3, 3);
 
+        lightCube.position.x = 3 * sin(glfwGetTime());
+        lightCube.position.z = 3 * cos(glfwGetTime());
+
         lightShader.Use();
         lightShader.SetMatrix4("view", camera.View());
-        lightShader.SetMatrix4("model", lightCube.GetMatrix4f());
+        lightShader.SetMatrix4("model", lightCube.GetModelMatrix());
         lightCube.Render();
 
         boxShader.Use();
         boxShader.SetMatrix4("view", camera.View());
-        boxShader.SetMatrix4("model", cube.GetMatrix4f());
+        boxShader.SetVec3("lightColor", glm::vec3(1.f));
+        boxShader.SetVec3("lightPos", lightCube.position);
+        boxShader.SetVec3("viewPos", camera.position);
+
+        glm::mat4 modelMat = cube.GetModelMatrix();
+        boxShader.SetMatrix4("model", modelMat);
+        boxShader.SetMatrix3("normalMatrix", Model::GetNormalMatrix(modelMat));
+
         cube.Render();
 
         glfwSwapBuffers(window);

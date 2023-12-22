@@ -18,12 +18,14 @@ Model::Model(int size, const float *vertices) :
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
     // 每个顶点大小为 5，前 3 个值表示坐标，后 2 个值表示 uv
-    int stride = 5 * sizeof(float);
+    int stride = 6 * sizeof(float);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr); // (void*)(0)
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float))); // (void*)(0)
+    // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
     // 设置好了顶点属性，还需要启用它们
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    // glEnableVertexAttribArray(2);
 }
 
 Model::Model(unsigned int VBO) :
@@ -37,9 +39,9 @@ Model::Model(unsigned int VBO) :
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    int stride = 5 * sizeof(float);
+    int stride = 6 * sizeof(float);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr); // (void*)(0)
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 }
@@ -57,7 +59,7 @@ void Model::Render() const
 }
 
 //TODO: 可以用脏标记来防止重复计算矩阵
-glm::mat4 Model::GetMatrix4f() const
+glm::mat4 Model::GetModelMatrix() const
 {
     glm::mat4 model(1);
 
@@ -68,6 +70,14 @@ glm::mat4 Model::GetMatrix4f() const
     model = glm::rotate(model, eulerRot.z, glm::vec3(0.f, 0.f, 1.f));
 
     return model;
+}
+
+glm::mat3 Model::GetNormalMatrix(glm::mat4 model)
+{
+    glm::mat3 result(model);
+    result = glm::transpose(glm::inverse(result));
+
+    return result;
 }
 
 /// 加载模型到显存上
